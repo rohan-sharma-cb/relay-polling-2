@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { RelayEnvironmentProvider, useLazyLoadQuery } from "react-relay/hooks";
+import { Suspense } from "react";
+import graphql from "babel-plugin-relay/macro";
+
+import RelayEnvironment from "./RelayEnvironment";
+import type { AppQuery } from "./__generated__/AppQuery.graphql";
+import "./App.css";
+
+const query = graphql`
+  query AppQuery {
+    getFilm(film: 4) {
+      director
+      title
+    }
+  }
+`;
 
 function App() {
+  const data = useLazyLoadQuery<AppQuery>(
+    query,
+    {},
+    { fetchPolicy: "network-only", networkCacheConfig: { poll: 3000 } }
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <p>
+      {data.getFilm.title} by {data.getFilm.director}
+    </p>
   );
 }
 
-export default App;
+function AppRoot() {
+  return (
+    <RelayEnvironmentProvider environment={RelayEnvironment}>
+      <div className="App">
+        <header className="App-header">
+          <Suspense fallback={"Loading..."}>
+            <App />
+          </Suspense>
+        </header>
+      </div>
+    </RelayEnvironmentProvider>
+  );
+}
+
+export default AppRoot;

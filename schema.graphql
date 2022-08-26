@@ -1,0 +1,951 @@
+"""
+Exposes a URL that specifies the behaviour of this scalar.
+"""
+directive @specifiedBy(
+  """
+  The URL that specifies the behaviour of this scalar.
+  """
+  url: String!
+) on SCALAR
+
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
+"""
+A Star Wars film
+"""
+type Film {
+  """
+  The characters that appeared in this film
+  """
+  characters: [Person!]!
+
+  """
+  The director of this film
+  """
+  director: String!
+
+  """
+  The episode number of this film
+  """
+  episodeId: Float!
+
+  """
+  The opening crawl text for this film
+  """
+  openingCrawl: String!
+
+  """
+  The planets that appeared in this film
+  """
+  planets: [Planet!]!
+
+  """
+  The producers of this film
+  """
+  producers: [String!]!
+
+  """
+  The date this film released
+  """
+  releaseDate: DateTime!
+
+  """
+  The species that appeared in this film
+  """
+  species: [Species!]!
+
+  """
+  The starships that appeared in this film
+  """
+  starships: [Starship!]!
+
+  """
+  The title of this film
+  """
+  title: String!
+
+  """
+  The vehicle that appeared in this film
+  """
+  vehicles: [Vehicle!]!
+}
+
+"""
+A 52-bit integer
+"""
+scalar Long
+
+"""
+A character that appeared in Star Wars
+"""
+type Person {
+  """
+  The year this character was released
+  """
+  birthYear: String
+
+  """
+  The eye colours of this character
+  """
+  eyeColors: [String!]
+
+  """
+  The films this character appeared in
+  """
+  films: [Film!]!
+
+  """
+  The gender of this character, one of "male", "female", "hermaphrodite" or null
+  """
+  gender: String
+
+  """
+  The colours of this person's hair
+  """
+  hairColors: [String!]
+
+  """
+  The height of this person in centimetres
+  """
+  height: Int
+
+  """
+  The planet that this person was born on
+  """
+  homeworld: Planet
+
+  """
+  The mass of this person in kilograms when applying standard gravity
+  """
+  mass: Float
+
+  """
+  The name of this person
+  """
+  name: String!
+
+  """
+  The colours of the skin of this person
+  """
+  skinColors: [String!]
+
+  """
+  The species of this person. Some characters are a mix of multiple species.
+  """
+  species: [Species!]!
+
+  """
+  The starships this character has flown or boarded
+  """
+  starships: [Starship!]!
+
+  """
+  The vehicles this character has controlled
+  """
+  vehicles: [Vehicle!]!
+}
+
+"""
+A planet that appeared in Star Wars
+"""
+type Planet {
+  """
+  The climates of this planet
+  """
+  climates: [String!]
+
+  """
+  The diameter of this planet in kilometres
+  """
+  diameter: Int
+
+  """
+  The films in which this planet was featured
+  """
+  films: [Film!]!
+
+  """
+  A number denoting the gravity of this planet, were "1" is standard gravity,
+  "2" is twice standard gravity and "0.5" is half standard gravity. This is null
+  for planets for which the gravity is unknown.
+  """
+  gravity: Float
+
+  """
+  The name of this planet
+  """
+  name: String!
+
+  """
+  The number of standard hours this planet takes to orbit around the nearest
+  star. Nullable if the orbital period is unknown for this planet
+  """
+  orbitalPeriod: Int
+
+  """
+  The average population of sentient beings inhabiting this planet. Null if population is unknown.
+  """
+  population: Long
+
+  """
+  The people who inhabit this planet
+  """
+  residents: [Person!]!
+
+  """
+  The number of standard hours this planet takes to rotate around its own axis.
+  Nullable if the rotation period is unknown for this planet
+  """
+  rotationPeriod: Int
+
+  """
+  The percentage of the planet that is naturally occurring water or bodies of
+  water. Null if this is unknown for this planet.
+  """
+  surfaceWater: Float
+
+  """
+  The types of terrain of this planet
+  """
+  terrains: [String!]
+}
+
+type Query {
+  """
+  Gets details on a Star Wars film, using the episode number of that film
+  """
+  getFilm(
+    """
+    The film to look up, referenced by episode number
+    """
+    film: Float!
+  ): Film!
+
+  """
+  Gets details on a Star Wars film, using a fuzzy search on title or episode number
+  This can be used to find multiple results based on the query
+  By default only 1 result is returned. You can provide the arguments "take",
+  "offset", and "reverse" to modify this behaviour.
+  """
+  getFuzzyFilm(
+    """
+    Sets the offset where to start
+    """
+    offset: Int = 0
+
+    """
+    Return only this many results, starting from the offset
+    """
+    take: Int = 1
+
+    """
+    Reverses the dataset before paginating
+    """
+    reverse: Boolean = false
+
+    """
+    The film to fuzzily search
+    """
+    film: String!
+  ): [Film!]!
+
+  """
+  Gets details on a Star Wars person, using the name of that person
+  """
+  getPerson(
+    """
+    The person to look up
+    """
+    person: StarWarsPeople!
+  ): Person!
+
+  """
+  Gets details on a Star Wars person, using a fuzzy search on that person's name
+  This can be used to find multiple results based on the query
+  By default only 1 result is returned. You can provide the arguments "take",
+  "offset", and "reverse" to modify this behaviour.
+  """
+  getFuzzyPerson(
+    """
+    Sets the offset where to start
+    """
+    offset: Int = 0
+
+    """
+    Return only this many results, starting from the offset
+    """
+    take: Int = 1
+
+    """
+    Reverses the dataset before paginating
+    """
+    reverse: Boolean = false
+
+    """
+    The person to fuzzily search
+    """
+    person: String!
+  ): [Person!]!
+
+  """
+  Gets details on a Star Wars planet, using the name of that planet
+  """
+  getPlanet(
+    """
+    The planet to look up
+    """
+    planet: StarWarsPlanets!
+  ): Planet!
+
+  """
+  Gets details on a Star Wars planet, using a fuzzy search on that planet's name
+  This can be used to find multiple results based on the query
+  By default only 1 result is returned. You can provide the arguments "take",
+  "offset", and "reverse" to modify this behaviour.
+  """
+  getFuzzyPlanet(
+    """
+    Sets the offset where to start
+    """
+    offset: Int = 0
+
+    """
+    Return only this many results, starting from the offset
+    """
+    take: Int = 1
+
+    """
+    Reverses the dataset before paginating
+    """
+    reverse: Boolean = false
+
+    """
+    The planet to fuzzily search
+    """
+    planet: String!
+  ): [Planet!]!
+
+  """
+  Gets details on a Star Wars species, using the name of that species
+  """
+  getSpecies(
+    """
+    The species to look up
+    """
+    species: StarWarsSpecies!
+  ): Species!
+
+  """
+  Gets details on a Star Wars species, using a fuzzy search on that species' name
+  This can be used to find multiple results based on the query
+  By default only 1 result is returned. You can provide the arguments "take",
+  "offset", and "reverse" to modify this behaviour.
+  """
+  getFuzzySpecies(
+    """
+    Sets the offset where to start
+    """
+    offset: Int = 0
+
+    """
+    Return only this many results, starting from the offset
+    """
+    take: Int = 1
+
+    """
+    Reverses the dataset before paginating
+    """
+    reverse: Boolean = false
+
+    """
+    The species to fuzzily search
+    """
+    species: String!
+  ): [Species!]!
+
+  """
+  Gets details on a Star Wars starship, using the name of that starship
+  """
+  getStarship(
+    """
+    The starship to look up
+    """
+    starship: StarWarsStarships!
+  ): Starship!
+
+  """
+  Gets details on a Star Wars starship, using a fuzzy search on that starship' name
+  This can be used to find multiple results based on the query
+  By default only 1 result is returned. You can provide the arguments "take",
+  "offset", and "reverse" to modify this behaviour.
+  """
+  getFuzzyStarship(
+    """
+    Sets the offset where to start
+    """
+    offset: Int = 0
+
+    """
+    Return only this many results, starting from the offset
+    """
+    take: Int = 1
+
+    """
+    Reverses the dataset before paginating
+    """
+    reverse: Boolean = false
+
+    """
+    The starship to fuzzily search
+    """
+    starship: String!
+  ): [Starship!]!
+
+  """
+  Gets details on a Star Wars vehicle, using the name of that vehicle
+  """
+  getVehicle(
+    """
+    The vehicle to look up
+    """
+    vehicle: StarWarsVehicles!
+  ): Vehicle!
+
+  """
+  Gets details on a Star Wars vehicle, using a fuzzy search on that vehicle' name
+  This can be used to find multiple results based on the query
+  By default only 1 result is returned. You can provide the arguments "take",
+  "offset", and "reverse" to modify this behaviour.
+  """
+  getFuzzyVehicle(
+    """
+    Sets the offset where to start
+    """
+    offset: Int = 0
+
+    """
+    Return only this many results, starting from the offset
+    """
+    take: Int = 1
+
+    """
+    Reverses the dataset before paginating
+    """
+    reverse: Boolean = false
+
+    """
+    The vehicle to fuzzily search
+    """
+    vehicle: String!
+  ): [Vehicle!]!
+}
+
+"""
+A species that appeared in Star Wars
+"""
+type Species {
+  """
+  The average heigh of this species, if specified
+  """
+  averageHeight: Int
+
+  """
+  The average lifespan of this species, if specified
+  """
+  averageLifespan: Int
+
+  """
+  The classification of this species, such as "mammal" or "reptile"
+  """
+  classification: String
+
+  """
+  The designation of this species, such as "sentient"
+  """
+  designation: String!
+
+  """
+  A list of common eye colours for this species, or null if the species doesn't have eyes
+  """
+  eyeColors: [String!]
+
+  """
+  The films this species appeared in
+  """
+  films: [Film!]!
+
+  """
+  A list of common hair colours for this species, or null if the species doesn't have hair
+  """
+  hairColors: [String!]
+
+  """
+  The planet this species originates from, or null if unknown
+  """
+  homeworld: Planet
+
+  """
+  The language commonly spoken by this species
+  """
+  language: String
+
+  """
+  The name of this species
+  """
+  name: String!
+
+  """
+  The people who are part of this species
+  """
+  people: [Person!]!
+
+  """
+  A list of common skin colours for this species, or null if the species doesn't have skin
+  """
+  skinColors: [String!]
+}
+
+"""
+A starship that appears in Star Wars
+"""
+type Starship {
+  """
+  The maximum cargo capacity of this starship in kilograms
+  """
+  cargoCapacity: Long
+
+  """
+  The maximum length of time that this starship can provide consumables for its
+  entire crew without having to resupply. Provided in amount of milliseconds.
+  """
+  consumables: Float
+
+  """
+  The cost of this starship, new, in galactic credits
+  """
+  costInCredits: Long
+
+  """
+  The number of personnel needed to run or pilot this starship
+  """
+  crew: Int
+
+  """
+  The films this starship appeared in
+  """
+  films: [Film!]!
+
+  """
+  The class of hyperdrive this starship has
+  """
+  hyperdriveRating: Float
+
+  """
+  The length of this starship in meters
+  """
+  length: Float!
+
+  """
+  An array of manufacturers of this starship
+  """
+  manufacturers: [String!]!
+
+  """
+  The maximum speed of this starship in the atmosphere, or null if this ship is incapable of atmospheric flight
+  """
+  maxAtmospheringSpeed: Int
+
+  """
+  The maximum number of Megalights this starship can travel in a standard hour.
+  A "Megalight" is a standard unit of distance and has never been defined before
+  within Star Wars universe. This figure is only really useful for measuring the
+  difference in speed of starships. We can assume it is similar to the
+  Astronomical Unit (AU), which is the distance between the human sun (Sol) and
+  primary planet (Earth)
+  """
+  MGLT: Int
+
+  """
+  The model of this starship
+  """
+  model: String!
+
+  """
+  The name of this starship
+  """
+  name: String!
+
+  """
+  The number of non-essential people this starship can transport
+  """
+  passengers: Int
+
+  """
+  The people who have piloted this starship
+  """
+  pilots: [Person!]!
+
+  """
+  The class of this starship
+  """
+  starshipClass: String!
+}
+
+"""
+The people in Star Wars
+"""
+enum StarWarsPeople {
+  lukeskywalker
+  c3po
+  r2d2
+  darthvader
+  leiaorgana
+  owenlars
+  beruwhitesunlars
+  r5d4
+  biggsdarklighter
+  obiwankenobi
+  anakinskywalker
+  wilhufftarkin
+  chewbacca
+  hansolo
+  greedo
+  jabbadesilijictiure
+  wedgeantilles
+  jektonoporkins
+  yoda
+  palpatine
+  bobafett
+  ig88
+  bossk
+  landocalrissian
+  lobot
+  ackbar
+  monmothma
+  arvelcrynyd
+  wicketsystriwarrick
+  niennunb
+  quigonjinn
+  nutegunray
+  finisvalorum
+  padmeamidala
+  jarjarbinks
+  roostarpals
+  rugornass
+  ricolie
+  watto
+  sebulba
+  quarshpanaka
+  shmiskywalker
+  darthmaul
+  bibfortuna
+  aylasecura
+  rattstyerel
+  dudbolt
+  gasgano
+  benquadinaros
+  macewindu
+  kiadimundi
+  kitfisto
+  eethkoth
+  adigallia
+  saeseetiin
+  yaraelpoof
+  plokoon
+  masamedda
+  gregartypho
+  corde
+  cliegglars
+  pogglethelesser
+  luminaraunduli
+  barrissoffee
+  dorme
+  dooku
+  bailprestororgana
+  jangofett
+  zamwesell
+  dexterjettster
+  lamasu
+  taunwe
+  jocastanu
+  r4p17
+  wattambor
+  sanhill
+  shaakti
+  grievous
+  tarfful
+  raymusantilles
+  slymoore
+  tionmedon
+}
+
+"""
+The planets in Star War
+"""
+enum StarWarsPlanets {
+  tatooine
+  alderaan
+  yaviniv
+  hoth
+  dagobah
+  bespin
+  endor
+  naboo
+  coruscant
+  kamino
+  geonosis
+  utapau
+  mustafar
+  kashyyyk
+  polismassa
+  mygeeto
+  felucia
+  catoneimoidia
+  saleucami
+  stewjon
+  eriadu
+  corellia
+  rodia
+  nalhutta
+  dantooine
+  bestineiv
+  ordmantell
+  trandosha
+  socorro
+  moncala
+  chandrila
+  sullust
+  toydaria
+  malastare
+  dathomir
+  ryloth
+  aleenminor
+  vulpter
+  troiken
+  tund
+  haruunkal
+  cerea
+  gleeanselm
+  iridonia
+  tholoth
+  iktotch
+  quermia
+  dorin
+  champala
+  mirial
+  serenno
+  concorddawn
+  zolan
+  ojom
+  skako
+  muunilinst
+  shili
+  kalee
+  umbara
+}
+
+"""
+The species in Star Wars
+"""
+enum StarWarsSpecies {
+  human
+  droid
+  wookiee
+  rodian
+  hutt
+  yodasspecies
+  trandoshan
+  moncalamari
+  ewok
+  sarlacc
+  sullustan
+  neimodian
+  gungan
+  toydarian
+  dug
+  twilek
+  aleena
+  vulptereen
+  xexto
+  toong
+  cerean
+  nautolan
+  zabrak
+  tholothian
+  iktotchi
+  quermian
+  keldor
+  chagrian
+  geonosian
+  mirialan
+  clawdite
+  besalisk
+  kaminoan
+  skakoan
+  muun
+  togruta
+  kaleesh
+  pauan
+  umbaran
+}
+
+"""
+The starships in Star Wars
+"""
+enum StarWarsStarships {
+  cr90corvette
+  stardestroyer
+  sentinelclasslandingcraft
+  deathstar
+  millenniumfalcon
+  ywing
+  xwing
+  tieadvancedx1
+  executor
+  rebeltransport
+  slave1
+  imperialshuttle
+  ef76nebulonbescortfrigate
+  calamaricruiser
+  awing
+  bwing
+  republiccruiser
+  droidcontrolship
+  naboofighter
+  nabooroyalstarship
+  scimitar
+  jtypediplomaticbarge
+  aa9coruscantfreighter
+  jedistarfighter
+  htypenubianyacht
+  republicassaultship
+  solarsailer
+  tradefederationcruiser
+  thetaclasst2cshuttle
+  republicattackcruiser
+  naboostarskiff
+  jediinterceptor
+  arc170
+  bankingclanfrigte
+  belbullab22starfighter
+  vwing
+}
+
+"""
+The vehicles in Star Wars
+"""
+enum StarWarsVehicles {
+  sandcrawler
+  t16skyhopper
+  x34landspeeder
+  tielnstarfighter
+  snowspeeder
+  tiebomber
+  atat
+  atst
+  stormivtwinpodcloudcar
+  sailbarge
+  banthaiicargoskiff
+  tieininterceptor
+  imperialspeederbike
+  vulturedroid
+  multitrooptransport
+  armoredassaulttank
+  singletrooperaerialplatform
+  c9979landingcraft
+  tribubblebongo
+  sithspeeder
+  zephyrgswoopbike
+  koro2exodriveairspeeder
+  xj6airspeeder
+  laati
+  laatc
+  atte
+  spha
+  flitknotspeeder
+  neimoidianshuttle
+  geonosianstarfighter
+  tsmeu6personalwheelbike
+  emergencyfirespeeder
+  droidtrifighter
+  oevvaorjetcatamaran
+  raddaughgnaspfluttercraft
+  cloneturbotank
+  corporatealliancetankdroid
+  droidgunship
+  atrt
+}
+
+"""
+A vehicle that appeared in Star Wars
+"""
+type Vehicle {
+  """
+  The maximum cargo capacity of this vehicle in kilograms
+  """
+  cargoCapacity: Int
+
+  """
+  The maximum length of time that this starship can provide consumables for its
+  entire crew without having to resupply. Provided in amount of milliseconds.
+  """
+  consumables: Float
+
+  """
+  The cost of this vehicle, new, in galactic credits
+  """
+  costInCredits: Int
+
+  """
+  The number of personnel needed to run or pilot this vehicle
+  """
+  crew: Int!
+
+  """
+  The films this vehicle appeared in
+  """
+  films: [Film!]!
+
+  """
+  The length of this vehicle in meters
+  """
+  length: Float
+
+  """
+  An array of manufacturers of this vehicle
+  """
+  manufacturers: [String!]
+
+  """
+  The maximum speed of this vehicle in the atmosphere, or null if this ship is incapable of atmospheric flight
+  """
+  maxAtmospheringSpeed: Int
+
+  """
+  The model of this vehicle
+  """
+  model: String!
+
+  """
+  The name of this vehicle
+  """
+  name: String!
+
+  """
+  The number of non-essential people this vehicle can transport
+  """
+  passengers: Int
+
+  """
+  The people who have piloted this vehicle
+  """
+  pilots: [Person!]!
+
+  """
+  The class of this vehicle
+  """
+  vehicleClass: String!
+}
